@@ -50,10 +50,6 @@ drive_link = "https://drive.google.com/uc?id=1nGhcK32CrkgTR5Rav6rNfptUHaASfRnU"
 output_path = "./checkpoint/zero-shot.zip"
 download_and_unzip(drive_link, output_path)
 
-# Unzip files
-os.system("unzip ./checkpoint/few-shot.zip -d ./checkpoint")
-os.system("unzip ./checkpoint/zero-shot.zip -d ./checkpoint")
-
 # Go back to base directory
 #os.chdir('/content/MVFA-AD')
 
@@ -72,6 +68,8 @@ print(ids)
 pattern = r'(.*?): '
 names = re.findall(pattern, s)
 print(names)
+
+os.makedirs('./data', exist_ok=True)
 
 # Download and extract tar.gz files
 for id, name in zip(ids, names):
