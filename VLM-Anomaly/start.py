@@ -5,7 +5,7 @@ from zipfile import ZipFile
 import re
 
 # Change directory
-os.chdir('/content/MVFA-AD')
+#os.chdir('/content/MVFA-AD')
 
 # Install requirements
 os.system("pip install -r requirements.txt")
@@ -34,28 +34,28 @@ def download_and_unzip(id, output_path):
         print(f"Error downloading or extracting: {e}")
 
 # Ensure the directories exist
-os.makedirs('/content/MVFA-AD/CLIP/ckpt', exist_ok=True)
-os.makedirs('/content/MVFA-AD/ckpt', exist_ok=True)
+os.makedirs('./VLM/checkpoint', exist_ok=True)
+os.makedirs('./checkpoint', exist_ok=True)
 
 # Downloading files
 url = "https://openaipublic.azureedge.net/clip/models/3035c92b350959924f9f00213499208652fc7ea050643e8b385c2dac08641f02/ViT-L-14-336px.pt"
-filename = "/content/MVFA-AD/CLIP/ckpt/ViT-L-14-336px.pt"
+filename = "./VLM/checkpoint/ViT-L-14-336px.pt"
 download_file(url, filename)
 
 drive_link = "https://drive.google.com/uc?id=1bV1yzPxJarTRfd8liMIwyHcGywTTEL2k"
-output_path = "/content/MVFA-AD/ckpt/few-shot.zip"
+output_path = "./checkpoint/few-shot.zip"
 download_and_unzip(drive_link, output_path)
 
 drive_link = "https://drive.google.com/uc?id=1nGhcK32CrkgTR5Rav6rNfptUHaASfRnU"
-output_path = "/content/MVFA-AD/ckpt/zero-shot.zip"
+output_path = "./checkpoint/zero-shot.zip"
 download_and_unzip(drive_link, output_path)
 
 # Unzip files
-os.system("unzip /content/MVFA-AD/ckpt/few-shot.zip -d /content/MVFA-AD/ckpt/")
-os.system("unzip /content/MVFA-AD/ckpt/zero-shot.zip -d /content/MVFA-AD/ckpt/")
+os.system("unzip ./checkpoint/few-shot.zip -d ./checkpoint")
+os.system("unzip ./checkpoint/zero-shot.zip -d ./checkpoint")
 
 # Go back to base directory
-os.chdir('/content/MVFA-AD')
+#os.chdir('/content/MVFA-AD')
 
 # Download and extract additional data files
 s = """Liver: https://drive.google.com/file/d/1xriF0uiwrgoPh01N6GlzE5zPi_OIJG1I/view?usp=sharing
@@ -75,6 +75,6 @@ print(names)
 
 # Download and extract tar.gz files
 for id, name in zip(ids, names):
-    tar_path = f"/content/MVFA-AD/data/{name}.tar.gz"
+    tar_path = f"./data/{name}.tar.gz"
     download_and_unzip(f"https://drive.google.com/uc?id={id}", tar_path)
-    os.system(f"tar -xvf {tar_path} -C /content/MVFA-AD/data/")
+    os.system(f"tar -xvf {tar_path} -C ./data/")
