@@ -104,7 +104,7 @@ def main():
                 score = test(args, model, test_loader, text_feature_list[CLASS_INDEX[args.obj]])
                 if score >= save_score:
                     save_score = score
-                    ckp_path = f'./ckpt/zero-shot/{args.obj}.pth'
+                    ckp_path = f'./checkpoint/zero-shot/{args.obj}.pth'
                     torch.save({'seg_adapters': model.seg_adapters.state_dict(),
                                 'det_adapters': model.det_adapters.state_dict()}, 
                                 ckp_path)
