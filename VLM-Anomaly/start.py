@@ -42,7 +42,7 @@ url = "https://openaipublic.azureedge.net/clip/models/3035c92b350959924f9f002134
 filename = "./VLM/checkpoint/ViT-L-14-336px.pt"
 download_file(url, filename)
 
-gdown.download("", "./", quiet=False)
+gdown.download("https://drive.google.com/file/d/1ca3omEC0XGq5m-5qk2AFtFWGfj_F-HgD/view?usp=sharing", "./resnet50_brain_regions.pth", quiet=False)
 print(f"Downloaded Labelling model successfully.")
 
 drive_link = "https://drive.google.com/uc?id=1bV1yzPxJarTRfd8liMIwyHcGywTTEL2k"

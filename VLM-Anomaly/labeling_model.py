@@ -3,6 +3,20 @@ import torch.nn.functional as F
 from torchvision import datasets, models, transforms
 from PIL import Image
 
+data_transforms = {
+    'train': transforms.Compose([
+        transforms.Resize((224, 224)),  # Resize images to match ResNet input size
+        transforms.RandomHorizontalFlip(),  # Data augmentation
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])  # Normalize for pretrained model
+    ]),
+    'val': transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ]),
+}
+
 # Load your dataset
 train_dataset = datasets.ImageFolder(root='/Users/sachinsabariram/Downloads/Dataset/train', transform=data_transforms['train'])
 class_names = train_dataset.classes  # Extract class labels
