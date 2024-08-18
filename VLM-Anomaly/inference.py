@@ -19,6 +19,13 @@ from utils import augment, cos_sim, encode_text_with_prompt_ensemble
 from prompt import REAL_NAME
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 import matplotlib.pyplot as plt
+import cv2
+import numpy as np
+from torchvision import transforms
+from PIL import Image
+
+from labeling_model import predict_label
+from report_llm import generate_report
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -131,11 +138,10 @@ def main():
     result = test(model, test_img, text_features, seg_mem_features, det_mem_features)
     print("\n\nFINAL", result)
 
-    import matplotlib.pyplot as plt
-import cv2
-import numpy as np
-from torchvision import transforms
-from PIL import Image
+    labels = predict_label()
+    generate_report(labels)
+
+
 
 def test(model, test_img, text_features, seg_mem_features, det_mem_features):
     # Default values
@@ -249,6 +255,11 @@ def visualize_anomaly(image_tensor, anomaly_map, shot):
     heatmap = cv2.applyColorMap(anomaly_map, cv2.COLORMAP_JET)
     heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
 
+    overlayed_image = cv2.addWeighted(image_np, 0.5, heatmap, 0.5, 0)
+
+    # Save the result using OpenCV
+    cv2.imwrite('anomaly_heatmap_overlay.png', cv2.cvtColor(overlayed_image, cv2.COLOR_RGB2BGR))
+
     # Display the original image and the heatmap
     plt.figure(figsize=(12, 6))
     plt.subplot(1, 2, 1)
@@ -261,5 +272,6 @@ def visualize_anomaly(image_tensor, anomaly_map, shot):
     plt.title('Anomaly Heatmap '+shot)
 
     plt.show()
+
 
 main()
