@@ -259,7 +259,7 @@ def visualize_anomaly(image_tensor, anomaly_map, shot):
 
     # Save the result using OpenCV
     cv2.imwrite('anomaly_heatmap_overlay.png', cv2.cvtColor(overlayed_image, cv2.COLOR_RGB2BGR))
-
+    print("image saved")
     # Display the original image and the heatmap
     plt.figure(figsize=(12, 6))
     plt.subplot(1, 2, 1)
