@@ -17,9 +17,17 @@ data_transforms = {
     ]),
 }
 
-# Load your dataset
-train_dataset = datasets.ImageFolder(root='/Users/sachinsabariram/Downloads/Dataset/train', transform=data_transforms['train'])
-class_names = train_dataset.classes  # Extract class labels
+
+class_names = ['Diencephalon',
+ 'Frontal lobe',
+ 'Frontal lobe of lateral ventricle',
+ 'Parietal lobe',
+ 'Quadrigeminal cistern',
+ 'Temporal horn of lateral ventricle',
+ 'Third ventricle',
+ 'occipital lobe',
+ 'temporal lobe',
+ 'ventricles']  # Extract class labels
 
 # Load your model
 model = models.resnet50(pretrained=True)
