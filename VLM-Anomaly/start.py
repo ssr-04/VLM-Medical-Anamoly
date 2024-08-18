@@ -42,6 +42,9 @@ url = "https://openaipublic.azureedge.net/clip/models/3035c92b350959924f9f002134
 filename = "./VLM/checkpoint/ViT-L-14-336px.pt"
 download_file(url, filename)
 
+gdown.download("", "./", quiet=False)
+print(f"Downloaded Labelling model successfully.")
+
 drive_link = "https://drive.google.com/uc?id=1bV1yzPxJarTRfd8liMIwyHcGywTTEL2k"
 output_path = "./checkpoint/few-shot.zip"
 download_and_unzip(drive_link, output_path)
