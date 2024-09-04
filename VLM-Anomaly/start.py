@@ -49,33 +49,16 @@ drive_link = "https://drive.google.com/uc?id=1bV1yzPxJarTRfd8liMIwyHcGywTTEL2k"
 output_path = "./checkpoint/few-shot.zip"
 download_and_unzip(drive_link, output_path)
 
-drive_link = "https://drive.google.com/uc?id=1nGhcK32CrkgTR5Rav6rNfptUHaASfRnU"
-output_path = "./checkpoint/zero-shot.zip"
-download_and_unzip(drive_link, output_path)
-
 # Go back to base directory
 #os.chdir('/content/MVFA-AD')
 
 # Download and extract additional data files
-s = """Liver: https://drive.google.com/file/d/1xriF0uiwrgoPh01N6GlzE5zPi_OIJG1I/view?usp=sharing
-Brain: https://drive.google.com/file/d/1YxcjcQqsPdkDO0rqIVHR5IJbqS9EIyoK/view?usp=sharing
-HIS: https://drive.google.com/file/d/1hueVJZCFIZFHBLHFlv1OhqF8SFjUVHk6/view?usp=sharing
-RESC: https://drive.google.com/file/d/1BqDbK-7OP5fUha5zvS2XIQl-_t8jhTpX/view?usp=sharing
-OCT17: https://drive.google.com/file/d/1GqT0V3_3ivXPAuTn4WbMM6B9i0JQcSnM/view?usp=sharing
-ChestXray: https://drive.google.com/file/d/15DhnBAk-h6TGLTUbNLxP8jCCDtwOHAjb/view?usp=sharing"""
+brain = "https://drive.google.com/uc?id=1YxcjcQqsPdkDO0rqIVHR5IJbqS9EIyoK"
 
-pattern = r'/d/(.*?)/view'
-ids = re.findall(pattern, s)
-print(ids)
-
-pattern = r'(.*?): '
-names = re.findall(pattern, s)
-print(names)
 
 os.makedirs('./data', exist_ok=True)
 
 # Download and extract tar.gz files
-for id, name in zip(ids, names):
-    tar_path = f"./data/{name}.tar.gz"
-    download_and_unzip(f"https://drive.google.com/uc?id={id}", tar_path)
-    os.system(f"tar -xvf {tar_path} -C ./data/")
+tar_path = f"./data/Brain.tar.gz"
+download_and_unzip(brain, tar_path)
+os.system(f"tar -xvf {tar_path} -C ./data/")
