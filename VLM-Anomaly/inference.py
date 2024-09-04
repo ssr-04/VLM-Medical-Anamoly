@@ -31,7 +31,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 use_cuda = torch.cuda.is_available()
-device = torch.device("cuda:0" if use_cuda else "cpu")
+device = torch.device("cuda:0" if use_cuda else "mps")
 
 CLASS_INDEX = {'Brain':3, 'Liver':2, 'Retina_RESC':1, 'Retina_OCT2017':-1, 'Histopathology':-3}
 CLASS_INDEX_INV = {3:'Brain', 2:'Liver', 1:'Retina_RESC', -1:'Retina_OCT2017', -3:'Histopathology'}
@@ -44,7 +44,7 @@ def setup_seed(seed):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
-def main():
+def main(path):
     # Default values
     model_name = 'ViT-L-14-336'
     pretrain = 'openai'
@@ -60,24 +60,25 @@ def main():
     shot = 4
     iterate = 0
 
-    parser = argparse.ArgumentParser(description='Testing')
+    """parser = argparse.ArgumentParser(description='Testing')
     parser.add_argument('--path', type=str, default='')
     args = parser.parse_args()
-    test_img = args.path
+    test_img = args.path"""
+    test_img = path
 
     setup_seed(seed)
-
+    print("Starting Inference")
     # Fixed feature extractor
     clip_model = create_model(model_name=model_name, img_size=img_size, device=device, pretrained=pretrain, require_pretrained=True)
     clip_model.eval()
-
+    print("Model loaded succesfully...Loading adapter layers")
     model = CLIP_Inplanted(clip_model=clip_model, features=features_list).to(device)
     model.eval()
 
-    checkpoint = torch.load(os.path.join(f'{save_path}', f'{obj}.pth'))
+    checkpoint = torch.load(os.path.join(f'{save_path}', f'{obj}.pth'), map_location=torch.device('mps'))
     model.seg_adapters.load_state_dict(checkpoint["seg_adapters"])
     model.det_adapters.load_state_dict(checkpoint["det_adapters"])
-
+    print("Loaded Adapters!\nSetting up for few shot....")
     for name, param in model.named_parameters():
         param.requires_grad = True
 
@@ -134,12 +135,14 @@ def main():
     seg_mem_features = [torch.cat([seg_features[j][i] for j in range(len(seg_features))], dim=0) for i in range(len(seg_features[0]))]
     det_mem_features = [torch.cat([det_features[j][i] for j in range(len(det_features))], dim=0) for i in range(len(det_features[0]))]
 
-
+    print("Model ready for inference!\nPassing the image..")
     result = test(model, test_img, text_features, seg_mem_features, det_mem_features)
     print("\n\nFINAL", result)
 
-    labels = predict_label()
-    generate_report(labels)
+    #labels = predict_label()
+    #report = generate_report(labels)
+    #print(report)
+    return "Under construction"
 
 
 
@@ -176,7 +179,7 @@ def test(model, test_img, text_features, seg_mem_features, det_mem_features):
     seg_score_map_zero = []
     seg_score_map_few = []
     
-
+    print("Done Precessing of the image!")
     with torch.no_grad(), torch.cuda.amp.autocast():
         _, seg_patch_tokens, det_patch_tokens = model(image)
         seg_patch_tokens = [p[0, 1:, :] for p in seg_patch_tokens]
@@ -210,7 +213,7 @@ def test(model, test_img, text_features, seg_mem_features, det_mem_features):
             seg_score_map_zero.append(score_map_zero)
 
             # Visualize the original image and heatmaps
-            
+            print("Anomaly map generated!")
             visualize_anomaly(image, score_map_few, "few-shot")
             visualize_anomaly(image, score_map_zero, "zero-shot")
 
@@ -259,9 +262,9 @@ def visualize_anomaly(image_tensor, anomaly_map, shot):
 
     # Save the result using OpenCV
     cv2.imwrite('anomaly_heatmap_overlay.png', cv2.cvtColor(overlayed_image, cv2.COLOR_RGB2BGR))
-    print("image saved")
+    print("Anomaly image saved locally..")
     # Display the original image and the heatmap
-    plt.figure(figsize=(12, 6))
+    """plt.figure(figsize=(12, 6))
     plt.subplot(1, 2, 1)
     plt.imshow(image_np)
     plt.title('Original Image')
@@ -271,7 +274,4 @@ def visualize_anomaly(image_tensor, anomaly_map, shot):
     plt.imshow(heatmap, alpha=0.5)
     plt.title('Anomaly Heatmap '+shot)
 
-    plt.show()
-
-
-main()
+    plt.show()"""
